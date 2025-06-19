@@ -18,21 +18,73 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      font-weight: 600;
-    }
-	nav .logo {
+    .logo {
       font-weight: 700;
       letter-spacing: 1px;
- transition: color 0.3s;
     }
-    nav a:hover {
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
       color: #cce5ff;
     }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: white;
+    }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .mobile-menu a {
+      margin: 10px 0;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu.show {
+        display: flex;
+      }
+    }
+
     main {
       max-width: 800px;
       margin: 40px auto;
@@ -41,10 +93,12 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
     }
+
     h1, h2 {
       color: #007bff;
       text-align: center;
     }
+
     .rickshaw-card {
       background: #eaf4ff;
       border-left: 5px solid #007bff;
@@ -53,30 +107,50 @@
       margin-bottom: 15px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
+
     .rickshaw-card strong {
       color: #333;
     }
+
     .rickshaw-card span {
       color: #555;
       font-weight: 500;
     }
+
     .no-data {
       text-align: center;
       color: #999;
       font-style: italic;
     }
+
     .positive {
       color: green;
     }
+
     .negative {
       color: red;
     }
   </style>
 </head>
 <body>
+
 <nav>
   <div class="logo">Rohan Paribahan</div>
-  <div>
+
+  <div class="nav-links">
+    <a href="addrickshaw.html">Manage Rickshaws</a>
+    <a href="addincome.html">Add Income</a>
+    <a href="addexpense.html">Add Expense</a>
+    <a href="report.html">Reports</a>
+  </div>
+
+  <div class="hamburger" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
     <a href="addrickshaw.html">Manage Rickshaws</a>
     <a href="addincome.html">Add Income</a>
     <a href="addexpense.html">Add Expense</a>
@@ -93,9 +167,12 @@
 </main>
 
 <script>
+  function toggleMenu() {
+    document.getElementById("mobileMenu").classList.toggle("show");
+  }
+
   const rickshaws = JSON.parse(localStorage.getItem('rickshaws') || '[]');
   const incomes = JSON.parse(localStorage.getItem('incomes') || '[]');
-
   const statsList = document.getElementById('statsList');
 
   if (rickshaws.length === 0) {
