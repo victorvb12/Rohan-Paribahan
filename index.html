@@ -1,119 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Rohan Paribahan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+    }
+
+    nav {
+      background: #007bff;
+      color: white;
+      padding: 15px 20px;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #cce5ff;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: white;
+    }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .mobile-menu a {
+      margin: 10px 0;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .mobile-menu a:hover {
+      background: #f0f0f0;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu.show {
+        display: flex;
+      }
+    }
+
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    }
+
+    h1, h2 {
+      color: #007bff;
+      text-align: center;
+    }
+
+    .rickshaw-card {
+      background: #eaf4ff;
+      border-left: 5px solid #007bff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .rickshaw-card strong {
+      color: #333;
+    }
+
+    .rickshaw-card span {
+      color: #555;
+      font-weight: 500;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+    }
+
+    .positive {
+      color: green;
+    }
+
+    .negative {
+      color: red;
+    }
+
+    /* Login overlay styles */
+    #loginOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #loginBox {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      max-width: 350px;
+      width: 90%;
+    }
+
+    #loginBox h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #007bff;
+      text-align: center;
+    }
+
+    #loginBox input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    #loginBox button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #loginBox button:hover {
+      background: #0056b3;
+    }
+
+    #loginError {
+      color: red;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
 <body>
+
+<!-- Login Overlay -->
+<div id="loginOverlay">
+  <div id="loginBox">
+    <h2>Admin Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <div id="loginError"></div>
+    <button onclick="handleLogin()">Login</button>
+  </div>
+</div>
+
+<!-- Navigation -->
 <nav>
   <div class="logo">Rohan Paribahan</div>
-
-  <div class="nav-links" id="navLinks">
+  <div class="nav-links">
     <a href="addrickshaw.html">Manage Rickshaws</a>
     <a href="addincome.html">Add Income</a>
     <a href="addexpense.html">Add Expense</a>
     <a href="report.html">Reports</a>
-    <a href="#" onclick="logout()" style="color:#ffcccc;">Logout</a>
   </div>
-
   <div class="hamburger" onclick="toggleMenu()">
     <div></div>
     <div></div>
     <div></div>
   </div>
-
   <div class="mobile-menu" id="mobileMenu">
     <a href="addrickshaw.html">Manage Rickshaws</a>
     <a href="addincome.html">Add Income</a>
     <a href="addexpense.html">Add Expense</a>
     <a href="report.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>
   </div>
 </nav>
 
-<main id="mainContent" style="display: none;">
+<!-- Main Content -->
+<main>
   <h1>Dashboard</h1>
   <p style="text-align:center;">Welcome to the Rickshaw Income Tracker Dashboard!</p>
-
   <h2>Rickshaw Stats</h2>
   <div id="statsList"></div>
 </main>
-
-<!-- Login Form -->
-<div id="loginBox" style="max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: none;">
-  <h2 style="text-align: center; color: #007bff;">Admin Login</h2>
-  <form id="loginForm">
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" required placeholder="admin@rohan.com" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc;"><br>
-
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" required placeholder="********" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc;"><br>
-
-    <button type="submit" style="width: 100%; background: #007bff; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold;">Login</button>
-  </form>
-</div>
 
 <script>
   function toggleMenu() {
     document.getElementById("mobileMenu").classList.toggle("show");
   }
 
-  function logout() {
-    localStorage.removeItem('isLoggedIn');
-    location.reload();
+  function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorBox = document.getElementById('loginError');
+
+    if (email === 'admin@rohan.com' && password === 'rickshawrohan') {
+      document.getElementById('loginOverlay').style.display = 'none';
+    } else {
+      errorBox.textContent = 'Invalid email or password.';
+    }
   }
 
   const rickshaws = JSON.parse(localStorage.getItem('rickshaws') || '[]');
   const incomes = JSON.parse(localStorage.getItem('incomes') || '[]');
   const statsList = document.getElementById('statsList');
-  const loginBox = document.getElementById('loginBox');
-  const mainContent = document.getElementById('mainContent');
-  const navLinks = document.getElementById('navLinks');
 
-  // Check login status
-  const isLoggedIn = localStorage.getItem('isLoggedIn');
-  if (isLoggedIn === 'true') {
-    showDashboard();
+  if (rickshaws.length === 0) {
+    statsList.innerHTML = '<p class="no-data">No rickshaws found.</p>';
   } else {
-    loginBox.style.display = 'block';
-    navLinks.style.display = 'none';
-  }
+    rickshaws.forEach(rick => {
+      const totalIncome = incomes
+        .filter(income => income.plate === rick.plate)
+        .reduce((sum, i) => sum + Number(i.amount || 0), 0);
 
-  // Handle login
-  document.getElementById('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value.trim();
-    const pass = document.getElementById('password').value.trim();
+      const investment = Number(rick.investment || 0);
+      const remaining = totalIncome - investment;
 
-    if (email === 'admin@rohan.com' && pass === 'rickshawrohan') {
-      localStorage.setItem('isLoggedIn', 'true');
-      location.reload();
-    } else {
-      alert('Invalid email or password');
-    }
-  });
-
-  function showDashboard() {
-    loginBox.style.display = 'none';
-    mainContent.style.display = 'block';
-    navLinks.style.display = 'flex';
-
-    if (rickshaws.length === 0) {
-      statsList.innerHTML = '<p class="no-data">No rickshaws found.</p>';
-    } else {
-      rickshaws.forEach(rick => {
-        const totalIncome = incomes
-          .filter(income => income.plate === rick.plate)
-          .reduce((sum, i) => sum + Number(i.amount || 0), 0);
-
-        const investment = Number(rick.investment || 0);
-        const remaining = totalIncome - investment;
-
-        const card = document.createElement('div');
-        card.className = 'rickshaw-card';
-        card.innerHTML = `
-          <strong>Plate:</strong> <span>${rick.plate}</span><br>
-          <strong>Investment:</strong> <span>৳${investment.toLocaleString()}</span><br>
-          <strong>Lifetime Earn:</strong> <span>৳${totalIncome.toLocaleString()}</span><br>
-          <strong>Remaining:</strong> <span class="${remaining >= 0 ? 'positive' : 'negative'}">৳${remaining.toLocaleString()}</span>
-        `;
-        statsList.appendChild(card);
-      });
-    }
+      const card = document.createElement('div');
+      card.className = 'rickshaw-card';
+      card.innerHTML = `
+        <strong>Plate:</strong> <span>${rick.plate}</span><br>
+        <strong>Investment:</strong> <span>৳${investment.toLocaleString()}</span><br>
+        <strong>Lifetime Earn:</strong> <span>৳${totalIncome.toLocaleString()}</span><br>
+        <strong>Remaining:</strong> <span class="${remaining >= 0 ? 'positive' : 'negative'}">৳${remaining.toLocaleString()}</span>
+      `;
+      statsList.appendChild(card);
+    });
   }
 </script>
+
 </body>
+</html>
