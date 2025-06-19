@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rohan Paribahan - Add Expense</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f0f4f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    min-height: 100vh;
+  }
+
+  nav {
+    background: #007bff;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  nav .logo {
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+    transition: color 0.3s;
+  }
+
+  nav a:hover {
+    color: #cce5ff;
+  }
+
+  .container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 480px;
+    padding: 30px 40px;
+    margin: 40px auto;
+  }
+
+  h1 {
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #555;
+  }
+
+  select, input[type="date"], input[type="number"] {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  select:focus, input[type="date"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52,152,219,0.3);
+  }
+
+  button {
+    padding: 14px;
+    background-color: #3498db;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  .empty-msg {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 20px 25px;
+      margin: 20px;
+    }
+    nav {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Rohan Paribahan</div>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="addrickshaw.html">Manage Rickshaws</a>
+    <a href="addincome.html">Add Income</a>
+    <a href="report.html">Reports</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Add Daily Expense</h1>
+
+  <form id="expenseForm" aria-label="Add daily expense form">
+    <label for="rickshawSelect">Select Rickshaw:</label>
+    <select id="rickshawSelect" required aria-required="true" aria-label="Select Rickshaw"></select>
+
+    <label for="expenseDate">Date:</label>
+    <input type="date" id="expenseDate" required aria-required="true" aria-label="Expense date" />
+
+    <label for="amount">Expense Amount (৳):</label>
+    <input type="number" id="amount" min="0" step="0.01" placeholder="e.g. 500" required aria-required="true" aria-label="Expense amount" />
+
+    <button type="submit">Add Expense</button>
+  </form>
+
+  <p id="emptyMsg" class="empty-msg" style="display:none;">No rickshaws found. Please add some first.</p>
+</div>
+
+<script>
+  const rickshawSelect = document.getElementById('rickshawSelect');
+  const expenseDate = document.getElementById('expenseDate');
+  const amountInput = document.getElementById('amount');
+  const expenseForm = document.getElementById('expenseForm');
+  const emptyMsg = document.getElementById('emptyMsg');
+
+  let rickshaws = JSON.parse(localStorage.getItem('rickshaws') || '[]');
+
+  function populateRickshawOptions() {
+    rickshawSelect.innerHTML = '';
+    if (rickshaws.length === 0) {
+      emptyMsg.style.display = 'block';
+      expenseForm.style.display = 'none';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+    expenseForm.style.display = 'flex';
+    rickshaws.forEach((r, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = `${r.plate}`;
+      rickshawSelect.appendChild(option);
+    });
+  }
+
+  expenseForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const rickshawId = Number(rickshawSelect.value);
+    const date = expenseDate.value;
+    const amount = parseFloat(amountInput.value);
+
+    if (!date || isNaN(amount) || amount < 0) {
+      alert("Please enter a valid date and amount.");
+      return;
+    }
+
+    const selectedRickshaw = rickshaws[rickshawId];
+    if (!selectedRickshaw) {
+      alert("Selected rickshaw not found.");
+      return;
+    }
+
+    const expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+
+    expenses.push({
+      plate: selectedRickshaw.plate,
+      rickshawId: rickshawId,
+      date: date,
+      amount: amount
+    });
+
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+
+    alert("Expense added successfully!");
+    expenseForm.reset();
+    expenseDate.valueAsDate = new Date(); // Reset date to today
+  });
+
+  // Auto-set today's date as default
+  expenseDate.valueAsDate = new Date();
+
+  populateRickshawOptions();
+</script>
+</body>
+</html>

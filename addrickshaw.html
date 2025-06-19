@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rohan Paribahan - Manage Rickshaws</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: #007bff;
+      color: white;
+      padding: 15px 20px;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+    }
+    nav .logo {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+    main {
+      flex-grow: 1;
+      max-width: 700px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    }
+    h1 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #007bff;
+      text-align: center;
+    }
+    form {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    input[type="text"], input[type="number"] {
+      flex: 1 1 200px;
+      padding: 12px 15px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    ul#rickshawList {
+      list-style: none;
+      padding-left: 0;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+    ul#rickshawList li {
+      background: #e9f0ff;
+      margin-bottom: 10px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
+      flex-wrap: wrap;
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+      margin-left: auto;
+    }
+    .delete-btn:hover {
+      background: #c82333;
+    }
+    .info {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Rohan Paribahan</div>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="addincome.html">Add Income</a>
+    <a href="addexpense.html">Add Expense</a>
+    <a href="report.html">Reports</a>
+  </div>
+</nav>
+
+<main>
+  <h1>Add a Rickshaw</h1>
+  <form id="rickshawForm">
+    <input type="text" id="plate" placeholder="Rickshaw Serial Number" required />
+    <input type="number" id="investment" placeholder="Investment (৳)" required min="0" />
+    <button type="submit">Add Rickshaw</button>	
+  </form>
+
+  <ul id="rickshawList"></ul>
+</main>
+
+<script>
+  const rickshawForm = document.getElementById('rickshawForm');
+  const plateInput = document.getElementById('plate');
+  const investmentInput = document.getElementById('investment');
+  const rickshawList = document.getElementById('rickshawList');
+
+  let rickshaws = JSON.parse(localStorage.getItem('rickshaws') || '[]');
+  let incomes = JSON.parse(localStorage.getItem('incomes') || '[]');
+
+  function saveAll() {
+    localStorage.setItem('rickshaws', JSON.stringify(rickshaws));
+    localStorage.setItem('incomes', JSON.stringify(incomes));
+  }
+
+  function renderRickshaws() {
+    rickshawList.innerHTML = '';
+    if (rickshaws.length === 0) {
+      rickshawList.innerHTML = '<li>No rickshaws added yet.</li>';
+      return;
+    }
+    rickshaws.forEach((r, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="info">
+          🚖 <strong>${r.plate}</strong><br>
+          💰 Investment: ৳${Number(r.investment).toLocaleString()}
+        </div>
+        <button class="delete-btn" onclick="deleteRickshaw(${i})">Delete</button>
+      `;
+      rickshawList.appendChild(li);
+    });
+  }
+
+  function deleteRickshaw(index) {
+    const rickToDelete = rickshaws[index];
+    const plate = rickToDelete.plate;
+
+    if (!confirm(`Delete rickshaw "${plate}" and all its income records?`)) return;
+
+    rickshaws.splice(index, 1);
+    incomes = incomes.filter(income => income.plate !== plate);
+
+    saveAll();
+    renderRickshaws();
+  }
+
+  rickshawForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const plate = plateInput.value.trim();
+    const investment = parseFloat(investmentInput.value);
+
+    if (!plate || isNaN(investment)) return;
+
+    if (rickshaws.some(r => r.plate.toLowerCase() === plate.toLowerCase())) {
+      alert('Rickshaw with this plate number already exists.');
+      return;
+    }
+
+    rickshaws.push({ plate, investment });
+    saveAll();
+    renderRickshaws();
+
+    plateInput.value = '';
+    investmentInput.value = '';
+    plateInput.focus();
+  });
+
+  renderRickshaws();
+</script>
+
+</body>
+</html>

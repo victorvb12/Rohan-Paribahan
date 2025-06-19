@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - Rohan Paribahan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+    }
+    nav {
+      background: #007bff;
+      color: white;
+      padding: 15px 20px;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 600;
+    }
+	nav .logo {
+      font-weight: 700;
+      letter-spacing: 1px;
+ transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #cce5ff;
+    }
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+    }
+    h1, h2 {
+      color: #007bff;
+      text-align: center;
+    }
+    .rickshaw-card {
+      background: #eaf4ff;
+      border-left: 5px solid #007bff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .rickshaw-card strong {
+      color: #333;
+    }
+    .rickshaw-card span {
+      color: #555;
+      font-weight: 500;
+    }
+    .no-data {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+    }
+    .positive {
+      color: green;
+    }
+    .negative {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <div class="logo">Rohan Paribahan</div>
+  <div>
+    <a href="addrickshaw.html">Manage Rickshaws</a>
+    <a href="addincome.html">Add Income</a>
+    <a href="addexpense.html">Add Expense</a>
+    <a href="report.html">Reports</a>
+  </div>
+</nav>
+
+<main>
+  <h1>Dashboard</h1>
+  <p style="text-align:center;">Welcome to the Rickshaw Income Tracker Dashboard!</p>
+
+  <h2>Rickshaw Stats</h2>
+  <div id="statsList"></div>
+</main>
+
+<script>
+  const rickshaws = JSON.parse(localStorage.getItem('rickshaws') || '[]');
+  const incomes = JSON.parse(localStorage.getItem('incomes') || '[]');
+
+  const statsList = document.getElementById('statsList');
+
+  if (rickshaws.length === 0) {
+    statsList.innerHTML = '<p class="no-data">No rickshaws found.</p>';
+  } else {
+    rickshaws.forEach(rick => {
+      const totalIncome = incomes
+        .filter(income => income.plate === rick.plate)
+        .reduce((sum, i) => sum + Number(i.amount || 0), 0);
+
+      const investment = Number(rick.investment || 0);
+      const remaining = totalIncome - investment;
+
+      const card = document.createElement('div');
+      card.className = 'rickshaw-card';
+      card.innerHTML = `
+        <strong>Plate:</strong> <span>${rick.plate}</span><br>
+        <strong>Investment:</strong> <span>৳${investment.toLocaleString()}</span><br>
+        <strong>Lifetime Earn:</strong> <span>৳${totalIncome.toLocaleString()}</span><br>
+        <strong>Remaining:</strong> <span class="${remaining >= 0 ? 'positive' : 'negative'}">৳${remaining.toLocaleString()}</span>
+      `;
+      statsList.appendChild(card);
+    });
+  }
+</script>
+
+</body>
+</html>
