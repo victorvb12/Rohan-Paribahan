@@ -15,6 +15,7 @@
       display: flex;
       flex-direction: column;
     }
+
     nav {
       background: #007bff;
       color: white;
@@ -23,22 +24,84 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+      position: relative;
     }
-    nav .logo {
+
+    .logo {
       font-weight: 700;
       letter-spacing: 1px;
     }
-    nav a {
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
       color: white;
       text-decoration: none;
-      margin-left: 20px;
       font-weight: 600;
       transition: color 0.3s;
     }
-    nav a:hover {
+
+    .nav-links a:hover {
       color: #cce5ff;
     }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .hamburger div {
+      width: 25px;
+      height: 3px;
+      background: white;
+    }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .mobile-menu a {
+      margin: 10px 0;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .mobile-menu a:hover {
+      background: #f0f0f0;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu.show {
+        display: flex;
+      }
+    }
+
     main {
       flex-grow: 1;
       max-width: 700px;
@@ -48,12 +111,14 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
     }
+
     h1 {
       margin-top: 0;
       margin-bottom: 20px;
       color: #007bff;
       text-align: center;
     }
+
     form {
       display: flex;
       gap: 15px;
@@ -61,6 +126,7 @@
       justify-content: center;
       margin-bottom: 30px;
     }
+
     input[type="text"], input[type="number"] {
       flex: 1 1 200px;
       padding: 12px 15px;
@@ -69,10 +135,12 @@
       font-size: 1rem;
       transition: border-color 0.3s;
     }
+
     input[type="text"]:focus, input[type="number"]:focus {
       border-color: #007bff;
       outline: none;
     }
+
     button {
       background: #007bff;
       color: white;
@@ -84,15 +152,18 @@
       font-weight: 600;
       transition: background 0.3s;
     }
+
     button:hover {
       background: #0056b3;
     }
+
     ul#rickshawList {
       list-style: none;
       padding-left: 0;
       max-height: 350px;
       overflow-y: auto;
     }
+
     ul#rickshawList li {
       background: #e9f0ff;
       margin-bottom: 10px;
@@ -105,6 +176,7 @@
       box-shadow: 0 2px 4px rgb(0 0 0 / 0.05);
       flex-wrap: wrap;
     }
+
     .delete-btn {
       background: #dc3545;
       color: white;
@@ -117,9 +189,11 @@
       transition: background 0.3s;
       margin-left: auto;
     }
+
     .delete-btn:hover {
       background: #c82333;
     }
+
     .info {
       flex-grow: 1;
     }
@@ -129,7 +203,21 @@
 
 <nav>
   <div class="logo">Rohan Paribahan</div>
-  <div>
+
+  <div class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="addincome.html">Add Income</a>
+    <a href="addexpense.html">Add Expense</a>
+    <a href="report.html">Reports</a>
+  </div>
+
+  <div class="hamburger" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
     <a href="index.html">Dashboard</a>
     <a href="addincome.html">Add Income</a>
     <a href="addexpense.html">Add Expense</a>
@@ -149,6 +237,10 @@
 </main>
 
 <script>
+  function toggleMenu() {
+    document.getElementById("mobileMenu").classList.toggle("show");
+  }
+
   const rickshawForm = document.getElementById('rickshawForm');
   const plateInput = document.getElementById('plate');
   const investmentInput = document.getElementById('investment');
